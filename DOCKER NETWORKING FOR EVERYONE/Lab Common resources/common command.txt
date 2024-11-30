@@ -1,0 +1,5 @@
+sudo apt update
+sudo apt install net-tools
+sudo apt install iproute2
+sudo apt install iputils-ping
+sudo apt install tcpdump

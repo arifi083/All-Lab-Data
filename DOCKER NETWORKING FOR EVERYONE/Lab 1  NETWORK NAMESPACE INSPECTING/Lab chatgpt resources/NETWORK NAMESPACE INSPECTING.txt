@@ -1,0 +1,135 @@
+Network namespaces in Linux are a fundamental feature used to isolate and manage network resources for different containers, processes, or network configurations. Inspecting and managing these namespaces can help troubleshoot networking issues, debug configurations, or understand how isolation is implemented.
+
+Here's a guide to inspecting and managing network namespaces:
+
+---
+
+### **1. Check Existing Network Namespaces**
+To list all network namespaces:
+```bash
+ip netns list
+```
+If no namespaces are displayed, only the default network namespace exists.
+
+---
+
+### **2. Inspect Network Namespace Details**
+You can inspect the details of a specific namespace using these commands:
+
+#### **View Network Interfaces in a Namespace**
+```bash
+ip netns exec <namespace_name> ip addr
+```
+
+#### **View Routing Table**
+```bash
+ip netns exec <namespace_name> ip route
+```
+
+#### **Ping from the Namespace**
+To verify connectivity:
+```bash
+ip netns exec <namespace_name> ping <destination>
+```
+
+#### **Run a Shell in the Namespace**
+This allows you to explore and execute commands interactively:
+```bash
+ip netns exec <namespace_name> bash
+```
+
+---
+
+### **3. Create a New Network Namespace**
+To create a new namespace:
+```bash
+sudo ip netns add <namespace_name>
+```
+
+Verify:
+```bash
+ip netns list
+```
+
+---
+
+### **4. Assign a Network Interface to a Namespace**
+You can move a virtual network interface (like `veth`) to a namespace:
+```bash
+sudo ip link set <interface_name> netns <namespace_name>
+```
+
+Verify the interface is in the namespace:
+```bash
+ip netns exec <namespace_name> ip addr
+```
+
+---
+
+### **5. Delete a Network Namespace**
+To delete a namespace:
+```bash
+sudo ip netns del <namespace_name>
+```
+
+---
+
+### **6. Debugging Network Namespaces**
+#### **Using `ethtool`**
+Inspect interfaces within a namespace:
+```bash
+ip netns exec <namespace_name> ethtool <interface_name>
+```
+
+#### **Using `tcpdump`**
+Capture packets in a namespace:
+```bash
+ip netns exec <namespace_name> tcpdump -i <interface_name>
+```
+
+---
+
+### **7. Tools for Advanced Namespace Inspection**
+- **`nsenter`:** Attach to any namespace (including network):
+  ```bash
+  sudo nsenter --net=/var/run/netns/<namespace_name>
+  ```
+- **`ip netns monitor`:** Monitor changes in network namespaces:
+  ```bash
+  ip netns monitor
+  ```
+
+---
+
+### Example Use Case: Simulating Network Isolation
+1. **Create two namespaces:**
+   ```bash
+   sudo ip netns add ns1
+   sudo ip netns add ns2
+   ```
+
+2. **Create a virtual Ethernet pair:**
+   ```bash
+   sudo ip link add veth1 type veth peer name veth2
+   ```
+
+3. **Assign interfaces to namespaces:**
+   ```bash
+   sudo ip link set veth1 netns ns1
+   sudo ip link set veth2 netns ns2
+   ```
+
+4. **Assign IP addresses and bring up interfaces:**
+   ```bash
+   ip netns exec ns1 ip addr add 192.168.1.1/24 dev veth1
+   ip netns exec ns1 ip link set veth1 up
+   ip netns exec ns2 ip addr add 192.168.1.2/24 dev veth2
+   ip netns exec ns2 ip link set veth2 up
+   ```
+
+5. **Test connectivity:**
+   ```bash
+   ip netns exec ns1 ping 192.168.1.2
+   ```
+
+Let me know if you'd like help with specific namespace configurations or debugging!
