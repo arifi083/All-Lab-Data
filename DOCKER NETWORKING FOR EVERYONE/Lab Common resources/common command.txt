@@ -3,3 +3,11 @@ sudo apt install net-tools
 sudo apt install iproute2
 sudo apt install iputils-ping
 sudo apt install tcpdump
+
+
+
+sudo apt update
+sudo apt upgrade -y
+sudo apt install iproute2 -y
+sudo apt install net-tools
+sude apt install curl tcpdump telnet iputils-ping -y
