@@ -1,0 +1,14 @@
+docker run --name my-nginx -v ~/nginx/html:/usr/share/nginx/html:ro -p 8080:80 -d nginx
+
+docker: Error response from daemon: Conflict. The container name "/my-nginx" is already in use by container 
+"afa63be9710376fd1ed38dc7dd5c78ce32fde424cd13bce131a71ab295e9ce4e". You have to remove (or rename)
+ that container to be able to reuse that name.
+
+container name to rename krte hbe
+
+
+docker: Error response from daemon: driver failed programming external connectivity on endpoint my-nginx 
+(da2151ed9e87230182dd5fb9dd2af8c21430cf1610fcad5bd82408a8d97cc462): 
+Error starting userland proxy: listen tcp4 0.0.0.0:8080: bind: address already in use.
+
+port ta change krte hbe.
